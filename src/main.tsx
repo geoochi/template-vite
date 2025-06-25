@@ -1,16 +1,16 @@
 import { createRoot } from 'react-dom/client'
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import App from './App'
+import Home from './components/Home'
 import About from './components/About'
 import NotFound from '@/components/NotFound'
 import '@/global.css'
 
-const Layout: React.FC = () => {
+const App: React.FC = () => {
   return (
     <div className='flex flex-col justify-center items-center min-h-screen gap-4'>
       <HashRouter>
         <Routes>
-          <Route path='/' element={<App />} />
+          <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
@@ -19,4 +19,4 @@ const Layout: React.FC = () => {
   )
 }
 
-createRoot(document.getElementById('root')!).render(<Layout />)
+createRoot(document.getElementById('root')!).render(<App />)
