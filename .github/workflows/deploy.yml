@@ -21,24 +21,32 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
         with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
+          run_install: false
+          version: 10
 
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
         with:
-          bun-version: latest
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: bun i
+        run: pnpm install
 
       - name: Build
-        run: bun b
+        run: pnpm b
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
